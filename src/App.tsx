@@ -19,19 +19,6 @@ import type {
 type AppView = "dashboard" | "calendar" | "newEntry" | "login";
 type SummaryRange = "daily" | "weekly" | "monthly" | "yearly" | "all";
 
-type SummaryConfig = {
-  label: string;
-  days?: number;
-};
-
-const SUMMARY_CONFIG: Record<SummaryRange, SummaryConfig> = {
-  daily: { label: "本日", days: 1 },
-  weekly: { label: "今週" },
-  monthly: { label: "今月" },
-  yearly: { label: "今年" },
-  all: { label: "全期間" }
-};
-
 const SUMMARY_OPTIONS: Array<{ value: SummaryRange; label: string }> = [
   { value: "daily", label: "本日" },
   { value: "weekly", label: "今週" },
@@ -600,7 +587,10 @@ function App() {
     );
   }, [summaryEntries, searchTerm]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredEntries.length / PAGE_SIZE) || 1);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredEntries.length / PAGE_SIZE) || 1
+  );
 
   useEffect(() => {
     setCurrentPage((prev) => (prev > totalPages ? totalPages : prev));
@@ -745,8 +735,6 @@ function App() {
     };
   }, [summaryEntries]);
 
-  const summaryLabel = SUMMARY_CONFIG[summaryRange].label;
-
   return (
     <div className="app">
       <header className="hero">
@@ -815,7 +803,6 @@ function App() {
             <div className="panel-heading">
               <div>
                 <h2>取引サマリ</h2>
-                <p className="panel-description">{summaryLabel}の成績をチェックできます。</p>
               </div>
               <div className="summary-controls">
                 <span className="summary-controls-label">集計対象</span>
@@ -916,81 +903,83 @@ function App() {
                       entry.realizedProfit !== null;
 
                     return (
-                    <li key={entry.id} className="entry-card">
-                      <header className="entry-header">
-                        <div className="entry-title">
-                          <span className="entry-ticker">
-                            {entry.ticker || "—"}
-                          </span>
-                          <span className="entry-ticker-name">
-                            {entry.tickerName || "—"}
-                          </span>
-                        </div>
-                        <div className="entry-header-actions">
-                          <time className="entry-date">{entry.tradeDate}</time>
-                          <button
-                            type="button"
-                            className="entry-edit-button"
-                            onClick={() => openEditEntry(entry)}>
-                            編集
-                          </button>
-                          <button
-                            type="button"
-                            className="entry-delete-button"
-                            onClick={() =>
-                              handleDeleteEntry(entry.id, entry.imagePath)
-                            }>
-                            削除
-                          </button>
-                        </div>
-                      </header>
-
-                      <div className="entry-body">
-                        <dl className="entry-stats">
-                          <div>
-                            <dt>損益</dt>
-                            <dd
-                              className={
-                                hasProfit && entry.realizedProfit! < 0
-                                  ? "negative"
-                                  : "positive"
-                              }>
-                              {hasProfit
-                                ? formatCurrency(entry.realizedProfit!)
-                                : "—"}
-                            </dd>
+                      <li key={entry.id} className="entry-card">
+                        <header className="entry-header">
+                          <div className="entry-title">
+                            <span className="entry-ticker">
+                              {entry.ticker || "—"}
+                            </span>
+                            <span className="entry-ticker-name">
+                              {entry.tickerName || "—"}
+                            </span>
                           </div>
-                        </dl>
+                          <div className="entry-header-actions">
+                            <time className="entry-date">
+                              {entry.tradeDate}
+                            </time>
+                            <button
+                              type="button"
+                              className="entry-edit-button"
+                              onClick={() => openEditEntry(entry)}>
+                              編集
+                            </button>
+                            <button
+                              type="button"
+                              className="entry-delete-button"
+                              onClick={() =>
+                                handleDeleteEntry(entry.id, entry.imagePath)
+                              }>
+                              削除
+                            </button>
+                          </div>
+                        </header>
 
-                        {entry.reason && (
-                          <section className="entry-note">
-                            <h4>売買理由</h4>
-                            <pre className="entry-note-text">
-                              {entry.reason}
-                            </pre>
-                          </section>
-                        )}
+                        <div className="entry-body">
+                          <dl className="entry-stats">
+                            <div>
+                              <dt>損益</dt>
+                              <dd
+                                className={
+                                  hasProfit && entry.realizedProfit! < 0
+                                    ? "negative"
+                                    : "positive"
+                                }>
+                                {hasProfit
+                                  ? formatCurrency(entry.realizedProfit!)
+                                  : "—"}
+                              </dd>
+                            </div>
+                          </dl>
 
-                        {entry.reflection && (
-                          <section className="entry-note">
-                            <h4>振り返り</h4>
-                            <pre className="entry-note-text">
-                              {entry.reflection}
-                            </pre>
-                          </section>
-                        )}
+                          {entry.reason && (
+                            <section className="entry-note">
+                              <h4>売買理由</h4>
+                              <pre className="entry-note-text">
+                                {entry.reason}
+                              </pre>
+                            </section>
+                          )}
 
-                        {entry.imageUrl && (
-                          <figure className="entry-image">
-                            <img
-                              src={entry.imageUrl}
-                              alt={`${entry.ticker} の取引メモ`}
-                            />
-                          </figure>
-                        )}
-                      </div>
-                    </li>
-                  );
+                          {entry.reflection && (
+                            <section className="entry-note">
+                              <h4>振り返り</h4>
+                              <pre className="entry-note-text">
+                                {entry.reflection}
+                              </pre>
+                            </section>
+                          )}
+
+                          {entry.imageUrl && (
+                            <figure className="entry-image">
+                              <img
+                                src={entry.imageUrl}
+                                alt={`${entry.ticker} の取引メモ`}
+                              />
+                            </figure>
+                          )}
+                        </div>
+                      </li>
+                    );
                   })}
                 </ul>
                 {filteredEntries.length > PAGE_SIZE && (
@@ -1001,8 +990,7 @@ function App() {
                       onClick={() =>
                         setCurrentPage((prev) => Math.max(1, prev - 1))
                       }
-                      disabled={currentPage === 1}
-                    >
+                      disabled={currentPage === 1}>
                       前へ
                     </button>
                     <span className="pagination-status">
@@ -1014,8 +1002,7 @@ function App() {
                       onClick={() =>
                         setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                       }
-                      disabled={currentPage === totalPages}
-                    >
+                      disabled={currentPage === totalPages}>
                       次へ
                     </button>
                   </nav>
