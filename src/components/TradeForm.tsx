@@ -8,7 +8,7 @@ type TradeFormProps = {
   isSubmitting: boolean
   formError: string
   maxDate: string
-  fileInputRef: RefObject<HTMLInputElement>
+  fileInputRef: RefObject<HTMLInputElement | null>
   onInputChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   onImageChange: (event: ChangeEvent<HTMLInputElement>) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void

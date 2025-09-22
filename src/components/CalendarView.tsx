@@ -72,29 +72,33 @@ export function CalendarView({
               ))}
             </div>
             <div className="calendar-grid">
-              {cells.map((cell) =>
-                cell.isPlaceholder ? (
-                  <div key={cell.key} className="calendar-cell placeholder" />
-                ) : (
+              {cells.map((cell) => {
+                if (cell.isPlaceholder) {
+                  return <div key={cell.key} className="calendar-cell placeholder" />
+                }
+
+                const profit = cell.profit ?? null
+                const profitClass =
+                  profit === null
+                    ? ''
+                    : profit > 0
+                      ? 'positive'
+                      : profit < 0
+                        ? 'negative'
+                        : 'neutral'
+
+                return (
                   <div
                     key={cell.key}
-                    className={`calendar-cell ${cell.isToday ? 'today' : ''} ${
-                      cell.profit !== null
-                        ? cell.profit > 0
-                          ? 'positive'
-                          : cell.profit < 0
-                            ? 'negative'
-                            : 'neutral'
-                        : ''
-                    }`}
+                    className={`calendar-cell ${cell.isToday ? 'today' : ''} ${profitClass}`}
                   >
                     <span className="calendar-day-number">{cell.day}</span>
                     <span className="calendar-profit">
-                      {cell.profit !== null ? formatCurrency(cell.profit) : '—'}
+                      {profit !== null ? formatCurrency(profit) : '—'}
                     </span>
                   </div>
-                ),
-              )}
+                )
+              })}
             </div>
           </>
         )}
