@@ -11,6 +11,7 @@ import type {
   CalendarCell,
   EditEntryDraft,
   FormState,
+  ImageViewerState,
   LoginState,
   MonthSummary,
   TradeEntry
@@ -80,6 +81,7 @@ function App() {
   const [editDraft, setEditDraft] = useState<EditEntryDraft | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [editError, setEditError] = useState("");
+  const [imageViewer, setImageViewer] = useState<ImageViewerState | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -376,6 +378,14 @@ function App() {
     }
 
     setEntries((prev) => prev.filter((entry) => entry.id !== entryId));
+  };
+
+  const openImageViewer = (src: string, alt: string) => {
+    setImageViewer({ src, alt });
+  };
+
+  const closeImageViewer = () => {
+    setImageViewer(null);
   };
 
   const handleSaveEdit = async () => {
@@ -969,14 +979,25 @@ function App() {
                             </section>
                           )}
 
-                          {entry.imageUrl && (
-                            <figure className="entry-image">
+                        {entry.imageUrl && (
+                          <figure className="entry-image">
+                            <button
+                              type="button"
+                              className="entry-image-button"
+                              onClick={() =>
+                                openImageViewer(
+                                  entry.imageUrl ?? '',
+                                  `${entry.ticker} の取引メモ`
+                                )
+                              }
+                            >
                               <img
                                 src={entry.imageUrl}
                                 alt={`${entry.ticker} の取引メモ`}
                               />
-                            </figure>
-                          )}
+                            </button>
+                          </figure>
+                        )}
                         </div>
                       </li>
                     );
@@ -1048,6 +1069,29 @@ function App() {
         onClose={closeEditEntry}
         onSubmit={handleSaveEdit}
       />
+      {imageViewer && (
+        <div
+          className="viewer-backdrop"
+          role="presentation"
+          onClick={closeImageViewer}
+        >
+          <figure
+            className="viewer-container"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img src={imageViewer.src} alt={imageViewer.alt} />
+            <figcaption>{imageViewer.alt}</figcaption>
+            <button
+              type="button"
+              className="viewer-close-button"
+              onClick={closeImageViewer}
+              aria-label="閉じる"
+            >
+              ✕
+            </button>
+          </figure>
+        </div>
+      )}
     </div>
   );
 }

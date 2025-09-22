@@ -47,3 +47,8 @@ export type EditEntryDraft = {
   reflection: string
   realizedProfitInput: string
 }
+
+export type ImageViewerState = {
+  src: string
+  alt: string
+}

@@ -391,6 +391,91 @@
   display: block;
 }
 
+.entry-image-button {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.viewer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 12, 48, 0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  z-index: 1200;
+}
+
+.viewer-container {
+  position: relative;
+  width: min(96vw, 1200px);
+  height: min(92vh, 720px);
+  margin: 0;
+  background: rgba(14, 8, 26, 0.9);
+  border-radius: 22px;
+  padding: 3rem 3rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 46px 90px -28px rgba(8, 3, 20, 0.85);
+}
+
+.viewer-container img {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  border-radius: 14px;
+  object-fit: contain;
+}
+
+.viewer-container figcaption {
+  color: #d9d1ff;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.viewer-close-button {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  border: none;
+  background: rgba(250, 248, 255, 0.18);
+  color: #f6f1ff;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.viewer-close-button:hover {
+  background: rgba(250, 248, 255, 0.3);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .viewer-container {
+    width: min(98vw, 1000px);
+    height: min(90vh, 640px);
+    padding: 2rem 1.75rem 1.75rem;
+  }
+
+  .viewer-container figcaption {
+    font-size: 0.85rem;
+  }
+
+  .viewer-close-button {
+    top: 0.9rem;
+    right: 1rem;
+  }
+}
+
 .form-page {
   display: flex;
   justify-content: center;
@@ -732,12 +817,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   z-index: 1000;
 }
 
 .modal-container {
-  width: min(540px, 100%);
+  width: min(820px, 100%);
   background: #ffffff;
   border-radius: 20px;
   box-shadow: 0 28px 60px -24px rgba(52, 23, 122, 0.45);
@@ -751,19 +836,19 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  padding: 1.5rem 1.75rem 0.5rem;
+  padding: 2rem 2.4rem 0.9rem;
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 1.45rem;
+  font-size: 1.65rem;
   color: #2c1d4f;
 }
 
 .modal-subtitle {
-  margin: 0.35rem 0 0;
+  margin: 0.45rem 0 0;
   color: #6d5aa5;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .modal-close-button {
@@ -783,7 +868,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 0 1.75rem 1.75rem;
+  padding: 0 2.4rem 2.4rem;
 }
 
 .modal-footnote {

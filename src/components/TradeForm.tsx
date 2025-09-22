@@ -1,19 +1,21 @@
-import type { ChangeEvent, FormEvent, RefObject } from 'react'
-import type { FormState } from '../types'
+import type { ChangeEvent, FormEvent, RefObject } from "react";
+import type { FormState } from "../types";
 
 type TradeFormProps = {
-  isLoggedIn: boolean
-  formState: FormState
-  imageFile: File | null
-  isSubmitting: boolean
-  formError: string
-  maxDate: string
-  fileInputRef: RefObject<HTMLInputElement | null>
-  onInputChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  onImageChange: (event: ChangeEvent<HTMLInputElement>) => void
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void
-  onCancel: () => void
-}
+  isLoggedIn: boolean;
+  formState: FormState;
+  imageFile: File | null;
+  isSubmitting: boolean;
+  formError: string;
+  maxDate: string;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  onInputChange: (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onImageChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onCancel: () => void;
+};
 
 export function TradeForm({
   isLoggedIn,
@@ -26,17 +28,18 @@ export function TradeForm({
   onInputChange,
   onImageChange,
   onSubmit,
-  onCancel,
+  onCancel
 }: TradeFormProps) {
   return (
     <main className="form-page">
       <section className="panel form-panel">
         <div>
           <h2>日記を登録</h2>
-          <p className="panel-description">毎日の売買をサマリして、学びを蓄積できます。</p>
         </div>
         {!isLoggedIn ? (
-          <p className="empty-state">投稿するにはSupabaseでログインしてください。</p>
+          <p className="empty-state">
+            投稿するにはSupabaseでログインしてください。
+          </p>
         ) : (
           <form className="trade-form" onSubmit={onSubmit}>
             <div className="form-row">
@@ -130,10 +133,16 @@ export function TradeForm({
             {formError && <p className="form-error">{formError}</p>}
 
             <div className="form-actions">
-              <button type="submit" className="submit-button" disabled={isSubmitting}>
-                {isSubmitting ? '保存中...' : '日記を保存する'}
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isSubmitting}>
+                {isSubmitting ? "保存中..." : "日記を保存する"}
               </button>
-              <button type="button" className="secondary-button" onClick={onCancel}>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={onCancel}>
                 一覧へ戻る
               </button>
             </div>
@@ -141,5 +150,5 @@ export function TradeForm({
         )}
       </section>
     </main>
-  )
+  );
 }
