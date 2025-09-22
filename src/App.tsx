@@ -979,25 +979,25 @@ function App() {
                             </section>
                           )}
 
-                        {entry.imageUrl && (
-                          <figure className="entry-image">
-                            <button
-                              type="button"
-                              className="entry-image-button"
-                              onClick={() =>
-                                openImageViewer(
-                                  entry.imageUrl ?? '',
-                                  `${entry.ticker} の取引メモ`
-                                )
-                              }
-                            >
-                              <img
-                                src={entry.imageUrl}
-                                alt={`${entry.ticker} の取引メモ`}
-                              />
-                            </button>
-                          </figure>
-                        )}
+                          {entry.imageUrl && (
+                            <figure className="entry-image">
+                              <button
+                                type="button"
+                                className="entry-image-button"
+                                onClick={() =>
+                                  openImageViewer(
+                                    entry.imageUrl ?? '',
+                                    `${entry.ticker} の取引メモ`
+                                  )
+                                }
+                              >
+                                <img
+                                  src={entry.imageUrl}
+                                  alt={`${entry.ticker} の取引メモ`}
+                                />
+                              </button>
+                            </figure>
+                          )}
                         </div>
                       </li>
                     );

@@ -42,92 +42,98 @@ export function TradeForm({
           </p>
         ) : (
           <form className="trade-form" onSubmit={onSubmit}>
-            <div className="form-row">
-              <label htmlFor="ticker">銘柄コード</label>
-              <input
-                id="ticker"
-                name="ticker"
-                type="text"
-                placeholder="例: 6871"
-                value={formState.ticker}
-                onChange={onInputChange}
-              />
-            </div>
+            <div className="form-columns">
+              <div className="form-column">
+                <div className="form-row">
+                  <label htmlFor="ticker">銘柄コード</label>
+                  <input
+                    id="ticker"
+                    name="ticker"
+                    type="text"
+                    placeholder="例: 6871"
+                    value={formState.ticker}
+                    onChange={onInputChange}
+                  />
+                </div>
 
-            <div className="form-row">
-              <label htmlFor="tickerName">銘柄名</label>
-              <input
-                id="tickerName"
-                name="tickerName"
-                type="text"
-                placeholder="例: 日本マイクロニクス"
-                value={formState.tickerName}
-                onChange={onInputChange}
-              />
-            </div>
+                <div className="form-row">
+                  <label htmlFor="tickerName">銘柄名</label>
+                  <input
+                    id="tickerName"
+                    name="tickerName"
+                    type="text"
+                    placeholder="例: 日本マイクロニクス"
+                    value={formState.tickerName}
+                    onChange={onInputChange}
+                  />
+                </div>
 
-            <div className="form-row">
-              <label htmlFor="tradeDate">売買日</label>
-              <input
-                id="tradeDate"
-                name="tradeDate"
-                type="date"
-                value={formState.tradeDate}
-                max={maxDate}
-                onChange={onInputChange}
-                required
-              />
-            </div>
+                <div className="form-row">
+                  <label htmlFor="tradeDate">売買日</label>
+                  <input
+                    id="tradeDate"
+                    name="tradeDate"
+                    type="date"
+                    value={formState.tradeDate}
+                    max={maxDate}
+                    onChange={onInputChange}
+                    required
+                  />
+                </div>
 
-            <div className="form-row">
-              <label htmlFor="realizedProfit">損益 (円)</label>
-              <input
-                id="realizedProfit"
-                name="realizedProfit"
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                placeholder="実現損益を記録 (任意)"
-                value={formState.realizedProfit}
-                onChange={onInputChange}
-              />
-            </div>
+                <div className="form-row">
+                  <label htmlFor="realizedProfit">損益 (円)</label>
+                  <input
+                    id="realizedProfit"
+                    name="realizedProfit"
+                    type="number"
+                    inputMode="decimal"
+                    step="0.01"
+                    placeholder="実現損益を記録 (任意)"
+                    value={formState.realizedProfit}
+                    onChange={onInputChange}
+                  />
+                </div>
 
-            <div className="form-row">
-              <label htmlFor="reason">売買理由</label>
-              <textarea
-                id="reason"
-                name="reason"
-                rows={3}
-                placeholder="どんな狙いでエントリーしたか？"
-                value={formState.reason}
-                onChange={onInputChange}
-              />
-            </div>
+                <div className="form-row">
+                  <label htmlFor="image">画像添付</label>
+                  <input
+                    id="image"
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={onImageChange}
+                    ref={fileInputRef}
+                  />
+                  {imageFile && <small>選択中: {imageFile.name}</small>}
+                </div>
+              </div>
 
-            <div className="form-row">
-              <label htmlFor="reflection">振り返りコメント</label>
-              <textarea
-                id="reflection"
-                name="reflection"
-                rows={3}
-                placeholder="仮説は合っていたか、次に活かせる学びは？"
-                value={formState.reflection}
-                onChange={onInputChange}
-              />
-            </div>
+              <div className="form-column form-column-notes">
+                <div className="form-row">
+                  <label htmlFor="reason">売買理由</label>
+                  <textarea
+                    id="reason"
+                    name="reason"
+                    rows={6}
+                    placeholder="どんな狙いでエントリーしたか？"
+                    value={formState.reason}
+                    onChange={onInputChange}
+                  />
+                </div>
 
-            <div className="form-row">
-              <label htmlFor="image">画像添付</label>
-              <input
-                id="image"
-                name="image"
-                type="file"
-                accept="image/*"
-                onChange={onImageChange}
-                ref={fileInputRef}
-              />
-              {imageFile && <small>選択中: {imageFile.name}</small>}
+                <div className="form-row">
+                  <label htmlFor="reflection">振り返りコメント</label>
+                  <textarea
+                    id="reflection"
+                    name="reflection"
+                    rows={6}
+                    placeholder="仮説は合っていたか、次に活かせる学びは？"
+                    value={formState.reflection}
+                    onChange={onInputChange}
+                  />
+                </div>
+              </div>
             </div>
 
             {formError && <p className="form-error">{formError}</p>}
