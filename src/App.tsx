@@ -40,6 +40,8 @@ const SUMMARY_OPTIONS: Array<{ value: SummaryRange; label: string }> = [
   { value: "all", label: "全期間" }
 ];
 
+const PAGE_SIZE = 20;
+
 const STORAGE_BUCKET = "trade-images";
 
 const todayString = () => new Date().toISOString().slice(0, 10);
@@ -91,6 +93,7 @@ function App() {
   const [editDraft, setEditDraft] = useState<EditEntryDraft | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [editError, setEditError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const initSession = async () => {
@@ -519,6 +522,10 @@ function App() {
     setCurrentView("calendar");
   };
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, summaryRange]);
+
   const summaryEntries = useMemo(() => {
     if (!entries.length) {
       return [];
@@ -592,6 +599,17 @@ function App() {
       )
     );
   }, [summaryEntries, searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredEntries.length / PAGE_SIZE) || 1);
+
+  useEffect(() => {
+    setCurrentPage((prev) => (prev > totalPages ? totalPages : prev));
+  }, [totalPages]);
+
+  const paginatedEntries = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return filteredEntries.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [filteredEntries, currentPage]);
 
   const { calendarCells, monthSummary, calendarMonthLabel } = useMemo(() => {
     const startOfMonth = new Date(
@@ -890,13 +908,14 @@ function App() {
                 まだ日記がありません。フォームから追加してみましょう。
               </p>
             ) : (
-              <ul className="entry-list">
-                {filteredEntries.map((entry) => {
-                  const hasProfit =
-                    entry.realizedProfit !== undefined &&
-                    entry.realizedProfit !== null;
+              <>
+                <ul className="entry-list">
+                  {paginatedEntries.map((entry) => {
+                    const hasProfit =
+                      entry.realizedProfit !== undefined &&
+                      entry.realizedProfit !== null;
 
-                  return (
+                    return (
                     <li key={entry.id} className="entry-card">
                       <header className="entry-header">
                         <div className="entry-title">
@@ -972,8 +991,36 @@ function App() {
                       </div>
                     </li>
                   );
-                })}
-              </ul>
+                  })}
+                </ul>
+                {filteredEntries.length > PAGE_SIZE && (
+                  <nav className="pagination" aria-label="取引履歴のページング">
+                    <button
+                      type="button"
+                      className="pagination-button"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(1, prev - 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      前へ
+                    </button>
+                    <span className="pagination-status">
+                      {currentPage} / {totalPages}
+                    </span>
+                    <button
+                      type="button"
+                      className="pagination-button"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      次へ
+                    </button>
+                  </nav>
+                )}
+              </>
             )}
           </section>
         </main>
