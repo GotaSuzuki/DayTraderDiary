@@ -1,5 +1,7 @@
 import type { CalendarCell, MonthSummary } from '../types'
 
+const formatter = new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 0 })
+
 type CalendarViewProps = {
   isLoggedIn: boolean
   monthLabel: string
@@ -94,7 +96,7 @@ export function CalendarView({
                   >
                     <span className="calendar-day-number">{cell.day}</span>
                     <span className="calendar-profit">
-                      {profit !== null ? formatCurrency(profit) : '—'}
+                      {profit !== null ? `${formatter.format(profit)}円` : '—'}
                     </span>
                   </div>
                 )
@@ -108,11 +110,9 @@ export function CalendarView({
 }
 
 const currencyFormatter = new Intl.NumberFormat('ja-JP', {
-  style: 'currency',
-  currency: 'JPY',
   maximumFractionDigits: 0,
 })
 
 function formatCurrency(value: number) {
-  return currencyFormatter.format(value)
+  return `${currencyFormatter.format(value)}円`
 }

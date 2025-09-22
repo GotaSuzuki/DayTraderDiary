@@ -40,3 +40,10 @@ export type MonthSummary = {
   losses: number
   net: number
 }
+
+export type EditEntryDraft = {
+  id: string
+  reason: string
+  reflection: string
+  realizedProfitInput: string
+}
