@@ -97,15 +97,23 @@ export function TradeForm({
 
                 <div className="form-row">
                   <label htmlFor="image">画像添付</label>
-                  <input
-                    id="image"
-                    name="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={onImageChange}
-                    ref={fileInputRef}
-                  />
-                  {imageFile && <small>選択中: {imageFile.name}</small>}
+                  <div className="file-upload">
+                    <label className="file-upload-trigger" htmlFor="image">
+                      ファイルを選択
+                    </label>
+                    <input
+                      id="image"
+                      name="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={onImageChange}
+                      ref={fileInputRef}
+                      className="file-upload-input"
+                    />
+                    <span className="file-upload-name">
+                      {imageFile ? imageFile.name : '選択されていません'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
