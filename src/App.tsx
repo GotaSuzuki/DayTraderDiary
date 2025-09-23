@@ -30,6 +30,11 @@ const SUMMARY_OPTIONS: Array<{ value: SummaryRange; label: string }> = [
 
 const PAGE_SIZE = 20;
 
+const dateKey = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+    date.getDate()
+  ).padStart(2, '0')}`;
+
 const STORAGE_BUCKET = "trade-images";
 
 const todayString = () => new Date().toISOString().slice(0, 10);
@@ -612,16 +617,8 @@ function App() {
   }, [filteredEntries, currentPage]);
 
   const { calendarCells, monthSummary, calendarMonthLabel } = useMemo(() => {
-    const startOfMonth = new Date(
-      calendarMonth.getFullYear(),
-      calendarMonth.getMonth(),
-      1
-    );
-    const endOfMonth = new Date(
-      calendarMonth.getFullYear(),
-      calendarMonth.getMonth() + 1,
-      0
-    );
+    const startOfMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
+    const endOfMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0);
     const profitsByDate = new Map<string, number>();
 
     entries.forEach((entry) => {
@@ -638,11 +635,8 @@ function App() {
       ) {
         return;
       }
-      const key = tradeDate.toISOString().slice(0, 10);
-      profitsByDate.set(
-        key,
-        (profitsByDate.get(key) ?? 0) + entry.realizedProfit
-      );
+      const key = dateKey(tradeDate);
+      profitsByDate.set(key, (profitsByDate.get(key) ?? 0) + entry.realizedProfit);
     });
 
     let totalProfit = 0;
@@ -656,7 +650,7 @@ function App() {
       }
     });
 
-    const todayIso = new Date().toISOString().slice(0, 10);
+    const todayKey = dateKey(new Date());
 
     const cells: CalendarCell[] = [];
 
@@ -666,18 +660,14 @@ function App() {
     }
 
     for (let day = 1; day <= endOfMonth.getDate(); day += 1) {
-      const currentDate = new Date(
-        calendarMonth.getFullYear(),
-        calendarMonth.getMonth(),
-        day
-      );
-      const key = currentDate.toISOString().slice(0, 10);
+      const currentDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+      const key = dateKey(currentDate);
       const profit = profitsByDate.has(key) ? profitsByDate.get(key)! : null;
       cells.push({
         key,
         day,
         profit,
-        isToday: key === todayIso
+        isToday: key === todayKey
       });
     }
 
