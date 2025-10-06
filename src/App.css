@@ -200,6 +200,47 @@
   color: #8c80b8;
 }
 
+.weekday-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.weekday-filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7866ad;
+}
+
+.weekday-filter-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 0.35rem;
+}
+
+.weekday-filter-button {
+  border: none;
+  border-radius: 999px;
+  background: rgba(111, 63, 245, 0.12);
+  color: #3a246e;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.weekday-filter-button:hover {
+  background: rgba(111, 63, 245, 0.2);
+}
+
+.weekday-filter-button.active {
+  background: #6f3ff5;
+  color: #ffffff;
+  box-shadow: 0 12px 26px -18px rgba(111, 63, 245, 0.6);
+}
+
 .list-panel {
   gap: 1rem;
 }

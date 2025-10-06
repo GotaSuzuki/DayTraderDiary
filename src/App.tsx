@@ -19,6 +19,7 @@ import type {
 
 type AppView = "dashboard" | "calendar" | "newEntry" | "login";
 type SummaryRange = "daily" | "weekly" | "monthly" | "yearly" | "all";
+type WeekdayFilter = "all" | "friSatSun" | 1 | 2 | 3 | 4;
 
 const SUMMARY_OPTIONS: Array<{ value: SummaryRange; label: string }> = [
   { value: "daily", label: "本日" },
@@ -26,6 +27,15 @@ const SUMMARY_OPTIONS: Array<{ value: SummaryRange; label: string }> = [
   { value: "monthly", label: "今月" },
   { value: "yearly", label: "今年" },
   { value: "all", label: "全期間" }
+];
+
+const WEEKDAY_OPTIONS: Array<{ value: WeekdayFilter; label: string }> = [
+  { value: "all", label: "全て" },
+  { value: 1, label: "月" },
+  { value: 2, label: "火" },
+  { value: 3, label: "水" },
+  { value: 4, label: "木" },
+  { value: "friSatSun", label: "金土日" }
 ];
 
 const PAGE_SIZE = 20;
@@ -63,6 +73,7 @@ function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [entries, setEntries] = useState<TradeEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [weekdayFilter, setWeekdayFilter] = useState<WeekdayFilter>("all");
   const [summaryRange, setSummaryRange] = useState<SummaryRange>("daily");
   const [currentView, setCurrentView] = useState<AppView>("dashboard");
   const [formState, setFormState] = useState<FormState>(() =>
@@ -583,9 +594,23 @@ function App() {
     });
   }, [entries, summaryRange]);
 
+  const weekdayFilteredEntries = useMemo(() => {
+    if (weekdayFilter === "all") {
+      return summaryEntries;
+    }
+
+    return summaryEntries.filter((entry) => {
+      const day = new Date(entry.tradeDate).getDay();
+      if (weekdayFilter === "friSatSun") {
+        return day === 5 || day === 6 || day === 0;
+      }
+      return day === weekdayFilter;
+    });
+  }, [summaryEntries, weekdayFilter]);
+
   const filteredEntries = useMemo(() => {
     const normalized = searchTerm.trim().toLowerCase();
-    const sorted = [...summaryEntries].sort((a, b) => {
+    const sorted = [...weekdayFilteredEntries].sort((a, b) => {
       const aTime = new Date(a.tradeDate).getTime();
       const bTime = new Date(b.tradeDate).getTime();
       return bTime - aTime;
@@ -600,7 +625,7 @@ function App() {
         value.toLowerCase().includes(normalized)
       )
     );
-  }, [summaryEntries, searchTerm]);
+  }, [weekdayFilteredEntries, searchTerm]);
 
   const totalPages = Math.max(
     1,
@@ -697,7 +722,7 @@ function App() {
   }, [calendarMonth, entries]);
 
   const analytics = useMemo(() => {
-    const totalTrades = summaryEntries.length;
+    const totalTrades = weekdayFilteredEntries.length;
     if (!totalTrades) {
       return {
         totalTrades: 0,
@@ -711,7 +736,7 @@ function App() {
     let winCount = 0;
     let profitSamples = 0;
 
-    summaryEntries.forEach((entry) => {
+    weekdayFilteredEntries.forEach((entry) => {
       if (
         entry.realizedProfit === null ||
         !Number.isFinite(entry.realizedProfit)
@@ -733,7 +758,7 @@ function App() {
       winRate: profitSamples ? winCount / profitSamples : 0,
       winSampleCount: profitSamples
     };
-  }, [summaryEntries]);
+  }, [weekdayFilteredEntries]);
 
   return (
     <div className="app">
@@ -833,6 +858,8 @@ function App() {
               </p>
             ) : summaryEntries.length === 0 ? (
               <p className="empty-state">この期間の記録はまだありません。</p>
+            ) : weekdayFilteredEntries.length === 0 ? (
+              <p className="empty-state">選択した曜日の記録はまだありません。</p>
             ) : (
               <div className="analytics-grid">
                 <article className="metric">
@@ -863,6 +890,38 @@ function App() {
                   <span className="metric-footnote">
                     損益入力 {analytics.winSampleCount} 件
                   </span>
+                  <div className="weekday-filter">
+                    <span className="weekday-filter-label">曜日で絞り込み</span>
+                    <div
+                      className="weekday-filter-buttons"
+                      role="group"
+                      aria-label="曜日で絞り込む">
+                      {WEEKDAY_OPTIONS.map((option) => {
+                        const isActive = weekdayFilter === option.value;
+                        return (
+                          <button
+                            key={String(option.value)}
+                            type="button"
+                            className={`weekday-filter-button ${
+                              isActive ? "active" : ""
+                            }`}
+                            onClick={() =>
+                              setWeekdayFilter((prev) => {
+                                if (option.value === "all") {
+                                  return "all";
+                                }
+                                return prev === option.value
+                                  ? "all"
+                                  : option.value;
+                              })
+                            }
+                            aria-pressed={isActive}>
+                            {option.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </article>
               </div>
             )}
@@ -892,7 +951,7 @@ function App() {
               </p>
             ) : !filteredEntries.length ? (
               <p className="empty-state">
-                まだ日記がありません。フォームから追加してみましょう。
+                検索または曜日の条件に一致する記録がありません。
               </p>
             ) : (
               <>
